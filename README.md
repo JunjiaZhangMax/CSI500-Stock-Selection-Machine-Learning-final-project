@@ -203,7 +203,7 @@ Rank target (exp\_003–015) removes market beta but also discards magnitude inf
 **Finding 2 — Time-decay sample weights are the single largest lever.**
 Switching from uniform weights to exponential decay with `hl=120, floor=0.5` raised April Sharpe from ~0.07 to 0.800 (11×). The mechanism: recent data in the bull market of 2026 Q1 is far more informative than 2025 sideways data, and the decay re-weights the training distribution accordingly. The floor prevents over-discarding the pre-2026 structural knowledge.
 
-**Finding 3 — Amplitude (振幅) adds independent alpha.**
+**Finding 3 — Amplitude adds independent alpha.**
 `amplitude_ma_20d` captures intraday price range dynamics not fully captured by `vol_20d` (which measures return std). Adding this feature with its cross-sectional rank raised April Sharpe from 0.800 to 0.978 despite slightly worsening CV IC (regime mismatch: the feature is more useful in trending markets).
 
 **Finding 4 — Rolling window (180d) is worse than expanding.**
