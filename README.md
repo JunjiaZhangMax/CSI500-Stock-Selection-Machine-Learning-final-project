@@ -82,12 +82,12 @@ Early experiments used a cross-sectional rank target (`target_3d_rank`) to remov
 
 A key improvement over uniform training is **exponential time-decay weighting**, which assigns higher importance to recent observations:
 
-$$W(t) = \max\!\left(2^{-(T-t)/h},\ f\right)$$
+$$W(t) = \max\\left(2^{-(T-t)/h},\ f\right)$$
 
 where $T$ is the most recent training date, $h$ is the half-life in trading days, and $f$ is a floor preventing old data from being discarded entirely.
 As a result the optimize object:
 
-$$F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^nW(t_i){[g_if_k(x_i) + \frac{1}{2}h_if_k^2(x_i)] + \gamma|L_k| + \frac{1}{2}\lambda||w^k||_2^2}$$
+$$F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^nW(t_i){[g_if_k(x_i) + \frac{1}{2}h_if_k^2(x_i)] + \gamma|L_k| + \frac{1}{2}\lambda\|w^k\|_2^2}$$
 
 where $k$ represents the $k_{th}$ tree, $t_{i}$ is the time of the corresponding $i_{th}$ data point, $L_{k}$ is the number of the leaves on a single tree.
 
