@@ -82,9 +82,14 @@ Early experiments used a cross-sectional rank target (`target_3d_rank`) to remov
 
 A key improvement over uniform training is **exponential time-decay weighting**, which assigns higher importance to recent observations:
 
-$$w(t) = \max\!\left(2^{-(T-t)/h},\ f\right)$$
+$$W(t) = \max\!\left(2^{-(T-t)/h},\ f\right)$$
 
 where $T$ is the most recent training date, $h$ is the half-life in trading days, and $f$ is a floor preventing old data from being discarded entirely.
+As a result the optimize object:
+
+$$F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^nW(t_i){[g_if_k(x_i) + \frac{1}{2}h_if_k^2(x_i)] + \gamma|L_k| + \frac{1}{2}\lambda||w^k||_2^2}$$
+
+where $k$ represents the $k_{th}$ tree, $t_{i}$ is the time of the corresponding $i_{th}$ data point, $L_{k}$ is the number of the leaves on a single tree.
 
 **Optimal parameters found:** `half_life = 120` trading days (~6 months), `floor = 0.5`.
 
@@ -103,6 +108,7 @@ To respect the time-series structure of financial data, we use **walk-forward cr
 ```
 Fold 1:  [──── train ────]  [emb=3d]  [val=10d]
 Fold 2:  [──────── train ────────]  [emb]  [val]
+...
 ...
 Fold 10: [──────────────────── train ────────────]  [emb]  [val]
 ```
@@ -203,7 +209,7 @@ Rank target (exp\_003–015) removes market beta but also discards magnitude inf
 **Finding 2 — Time-decay sample weights are the single largest lever.**
 Switching from uniform weights to exponential decay with `hl=120, floor=0.5` raised April Sharpe from ~0.07 to 0.800 (11×). The mechanism: recent data in the bull market of 2026 Q1 is far more informative than 2025 sideways data, and the decay re-weights the training distribution accordingly. The floor prevents over-discarding the pre-2026 structural knowledge.
 
-**Finding 3 — Amplitude (振幅) adds independent alpha.**
+**Finding 3 — Amplitude adds independent alpha.**
 `amplitude_ma_20d` captures intraday price range dynamics not fully captured by `vol_20d` (which measures return std). Adding this feature with its cross-sectional rank raised April Sharpe from 0.800 to 0.978 despite slightly worsening CV IC (regime mismatch: the feature is more useful in trending markets).
 
 **Finding 4 — Rolling window (180d) is worse than expanding.**
