@@ -1,2 +1,0 @@
-# CSI500-Stock-Selection-Machine-Learning-final-project-
-This project builds a long-only stock selection model targeting excess return over the CSI500 index benchmark. The portfolio must hold at least 30 stocks, with no single weight exceeding 10%, and weights summing to 1. Performance is evaluated over two holding windows: Window 1 (3 trading days, May 6–8) and Window 2 (5 trading days, May 11–15).
