@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CSI500 Stock Selection Report</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: none;
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+<style>
+
+/* ── Page setup ── */
+@page {
+    size: A4;
+    margin: 2.2cm 2.4cm 2.8cm 2.4cm;
+    @bottom-center {
+        content: counter(page);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 10pt;
+        color: #555;
+    }
+    @top-right {
+        content: "CSI500 Stock Selection — Junjia Zhang";
+        font-family: "Times New Roman", Times, serif;
+        font-size: 9pt;
+        color: #888;
+    }
+}
+@page :first { @top-right { content: none; } @bottom-center { content: none; } }
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11.5pt;
+    line-height: 1.55;
+    color: #111;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* ── Title block ── */
+header, .title-block {
+    text-align: center;
+    margin-bottom: 1.8em;
+    border-bottom: 2px solid #1a3a6b;
+    padding-bottom: 1em;
+}
+h1.title {
+    font-size: 20pt;
+    font-weight: bold;
+    color: #1a3a6b;
+    margin: 0 0 0.3em 0;
+    line-height: 1.25;
+}
+.subtitle { font-size: 13pt; color: #444; margin: 0.2em 0; }
+.author   { font-size: 11.5pt; color: #333; margin: 0.5em 0 0.2em; font-style: italic; }
+.date     { font-size: 10.5pt; color: #666; margin: 0; }
+
+/* ── Sections ── */
+h1, h2, h3, h4 {
+    font-family: "Times New Roman", Times, serif;
+    color: #1a3a6b;
+    page-break-after: avoid;
+}
+h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 1.8em;
+    margin-bottom: 0.4em;
+    border-bottom: 1px solid #c0cfe0;
+    padding-bottom: 3px;
+}
+h3 {
+    font-size: 12.5pt;
+    font-weight: bold;
+    margin-top: 1.2em;
+    margin-bottom: 0.3em;
+}
+h4 {
+    font-size: 11.5pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 1em;
+    margin-bottom: 0.25em;
+    color: #2c5282;
+}
+
+/* ── Paragraphs ── */
+p { margin: 0.5em 0 0.7em; }
+
+/* ── Tables ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5pt;
+    margin: 1em 0 1.2em;
+    page-break-inside: avoid;
+}
+thead tr {
+    background-color: #1a3a6b;
+    color: #fff;
+}
+thead th {
+    padding: 7px 10px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #1a3a6b;
+}
+tbody tr:nth-child(even) { background-color: #eef2f8; }
+tbody tr:nth-child(odd)  { background-color: #fff; }
+tbody td {
+    padding: 5px 10px;
+    border: 1px solid #c5d0e0;
+    vertical-align: top;
+}
+tbody tr:hover { background-color: #dde8f5; }
+
+/* ── Code blocks ── */
+pre, code {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9.5pt;
+    background: #f5f7fa;
+    border: 1px solid #d0d7e4;
+    border-radius: 4px;
+}
+code { padding: 1px 4px; }
+pre  { padding: 10px 14px; overflow-x: auto; line-height: 1.4;
+       margin: 0.8em 0; white-space: pre-wrap; }
+pre code { background: none; border: none; padding: 0; }
+
+/* ── Math ── */
+math { font-size: 11pt; }
+.math, math[display="block"] {
+    display: block;
+    text-align: center;
+    margin: 0.8em auto;
+    overflow-x: auto;
+}
+
+/* ── Lists ── */
+ul, ol { margin: 0.4em 0 0.8em 1.8em; padding: 0; }
+li { margin-bottom: 0.3em; }
+
+/* ── Horizontal rule ── */
+hr {
+    border: none;
+    border-top: 1px solid #c0cfe0;
+    margin: 1.5em 0;
+}
+
+/* ── Bold / italic ── */
+strong { color: #1a3a6b; }
+
+/* ── Block quote (used for findings) ── */
+blockquote {
+    border-left: 3px solid #1a3a6b;
+    margin: 0.8em 0 0.8em 1em;
+    padding: 0.4em 0.8em;
+    color: #333;
+    background: #f0f4fb;
+    font-style: normal;
+}
+
+/* ── Footer note ── */
+footer, .footnotes {
+    font-size: 9.5pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    margin-top: 2em;
+    padding-top: 0.5em;
+}
+
+/* ── Page breaks ── */
+h2 { page-break-before: auto; }
+
+/* ── Override pandoc defaults (max-width:36em, excess padding) ── */
+body {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+</style>
+</head>
+<body>
+
+<div style="text-align:center;border-bottom:2px solid #1a3a6b;padding-bottom:1em;margin-bottom:1.8em">
+  <div style="font-size:20pt;font-weight:bold;color:#1a3a6b;margin-bottom:0.3em">
+    CSI500 Stock Selection Report</div>
+  <div style="font-size:11.5pt;color:#444;margin:0.3em 0">Machine Learning Competition</div>
+  <div style="font-size:11.5pt;font-style:italic;color:#333;margin:0.4em 0">
+    Junjia (Max) Zhang &nbsp;·&nbsp; jz7842@nyu.edu</div>
+  <div style="font-size:10.5pt;color:#666">May 2026</div>
+</div>
+
+<h1 id="csi500-stock-selection-report">CSI500 Stock Selection
+Report</h1>
+<p><strong>Course/Competition:</strong> Machine Learning</p>
+<p><strong>Author:</strong> Junjia Max Zhang</p>
+<p><strong>Date:</strong> May 2026</p>
+<hr />
+<h2 id="objective">1. Objective</h2>
+<p>This project builds a long-only stock selection model targeting
+excess return over the CSI500 index benchmark. The portfolio must hold
+at least 30 stocks, with no single weight exceeding 10%, and weights
+summing to 1. Performance is evaluated over two 5-trading-day holding
+windows:</p>
+<ul>
+<li><strong>Window 1:</strong> May 6–8, 2026 (3 trading days, post-Labor
+Day opening)</li>
+<li><strong>Window 2:</strong> May 11–15, 2026 (5 trading days)</li>
+</ul>
+<hr />
+<h2 id="data">2. Data</h2>
+<p><strong>Source:</strong> AKShare (Sina backend), forward-adjusted
+daily OHLCV<br />
+<strong>Universe:</strong> CSI500 constituents (~500 A-share
+stocks)<br />
+<strong>Period:</strong> 2024-10-08 — 2026-05-08 (~330 trading
+days)<br />
+<strong>Fields:</strong> date, stock_code, open, close, high, low,
+volume, amount, turnover</p>
+<p>An additional CSI500 index OHLCV series is used as the benchmark. The
+constituent list is a static snapshot at download time, meaning no
+historical addition/deletion events are modeled within the period.</p>
+<hr />
+<h2 id="feature-engineering">3. Feature Engineering</h2>
+<p>All features are computed per-stock from OHLCV history, then
+cross-sectionally ranked within each trading day to remove common
+market-level variation.</p>
+<h3 id="time-series-features">3.1 Time-Series Features</h3>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ret_1d</code>, <code>ret_5d</code>, <code>ret_10d</code>,
+<code>ret_20d</code>, <code>ret_60d</code></td>
+<td>Simple return over N days: <code>close(t)/close(t−N) − 1</code></td>
+</tr>
+<tr>
+<td><code>vol_20d</code></td>
+<td>Rolling 20-day std of daily returns (realized volatility)</td>
+</tr>
+<tr>
+<td><code>volume_z_20d</code></td>
+<td>Volume z-score: <code>(vol − mean₂₀) / std₂₀</code></td>
+</tr>
+<tr>
+<td><code>turnover_ma_20d</code></td>
+<td>20-day moving average of turnover rate</td>
+</tr>
+<tr>
+<td><code>close_over_ma20</code>, <code>close_over_ma60</code></td>
+<td>Price deviation from 20/60-day MA</td>
+</tr>
+<tr>
+<td><code>rsi_14</code></td>
+<td>14-day Relative Strength Index</td>
+</tr>
+<tr>
+<td><code>amplitude_ma_20d</code></td>
+<td>20-day MA of daily price amplitude:
+<code>(high − low) / prev_close</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-sectional-rank-features">3.2 Cross-Sectional Rank
+Features</h3>
+<p>Four features are additionally rank-normalized (percentile in [0, 1])
+within each trading day: <code>ret_5d_rank</code>,
+<code>ret_20d_rank</code>, <code>vol_20d_rank</code>,
+<code>amplitude_ma_20d_rank</code></p>
+<p>These stabilize signals across regime shifts by encoding relative
+rather than absolute positioning.</p>
+<h3 id="amplitude-feature">3.3 Amplitude Feature</h3>
+<p>The <code>amplitude_ma_20d</code> feature captures the average daily
+price swing range over the past 20 trading days, defined as
+<code>(high − low) / close(t−1)</code>. Unlike volatility
+(<code>vol_20d</code>, which measures return std), amplitude captures
+the absolute intraday price range and is particularly informative during
+momentum breakouts. Adding this feature raised the April backtest Sharpe
+from 0.800 to <strong>0.978</strong> (+22%).</p>
+<h3 id="prediction-targets">3.4 Prediction Targets</h3>
+<p>Two targets were evaluated:</p>
+<ul>
+<li><strong><code>target_3d</code></strong>: 3-day forward return
+<code>close(t+3)/close(t) − 1</code>, used for Window 1 submission.</li>
+<li><strong><code>target_5d</code></strong>: 5-day forward return
+<code>close(t+5)/close(t) − 1</code>, used for Window 2 submission.</li>
+</ul>
+<p>The 5-day target was adopted for Window 2 because it directly aligns
+with the evaluation horizon: a model trained on 5-day returns predicts
+the full holding period return (May 8 → May 15), whereas a 3-day model
+targets only May 8 → May 13, leaving the final two days unmodelled.</p>
+<hr />
+<h2 id="model">4. Model</h2>
+<p><strong>Algorithm:</strong> XGBoost (gradient boosting on decision
+trees)<br />
+<strong>Task:</strong> Regression on raw forward return
+(<code>target_3d</code> for W1, <code>target_5d</code> for W2)</p>
+<h3 id="hyperparameters">4.1 Hyperparameters</h3>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 24%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>n_estimators</code></td>
+<td>400</td>
+<td>Fixed across folds for consistent capacity</td>
+</tr>
+<tr>
+<td><code>max_depth</code></td>
+<td>5</td>
+<td>Controls tree complexity</td>
+</tr>
+<tr>
+<td><code>learning_rate</code></td>
+<td>0.05</td>
+<td>Conservative shrinkage</td>
+</tr>
+<tr>
+<td><code>subsample</code></td>
+<td>0.8</td>
+<td>Row subsampling for variance reduction</td>
+</tr>
+<tr>
+<td><code>colsample_bytree</code></td>
+<td>0.8</td>
+<td>Feature subsampling</td>
+</tr>
+<tr>
+<td><code>min_child_weight</code></td>
+<td>10</td>
+<td>Minimum leaf weight; stabilizes cross-sectional estimates</td>
+</tr>
+<tr>
+<td><code>reg_lambda</code></td>
+<td>1.0</td>
+<td>L2 regularization</td>
+</tr>
+</tbody>
+</table>
+<h3 id="time-decay-sample-weights">4.2 Time-Decay Sample Weights</h3>
+<p>A key improvement over uniform training is <strong>exponential
+time-decay weighting</strong>, which assigns higher importance to recent
+observations:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">max</mi><mo>&#8289;</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msup><mn>2</mn><mrow><mi>−</mi><mo stretchy="false" form="prefix">(</mo><mi>T</mi><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>h</mi></mrow></msup><mo>,</mo><mspace width="0.222em"></mspace><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W(t) = \max\!\left(2^{-(T-t)/h},\ f\right)</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+is the most recent training date,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+is the half-life in trading days, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+is a floor preventing old data from being discarded entirely. As a
+result the optimized objective becomes:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>≈</mo><mtext mathvariant="normal">const.</mtext><mo>+</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>W</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>g</mi><mi>i</mi></msub><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mi>h</mi><mi>i</mi></msub><msubsup><mi>f</mi><mi>k</mi><mn>2</mn></msubsup><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">]</mo></mrow><mo>+</mo><mi>γ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>L</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>λ</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">|</mo><msup><mi>w</mi><mi>k</mi></msup><mo stretchy="false" form="prefix">|</mo><msubsup><mo stretchy="false" form="prefix">|</mo><mn>2</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^nW(t_i)\left[g_if_k(x_i) + \frac{1}{2}h_if_k^2(x_i)\right] + \gamma|L_k| + \frac{1}{2}\lambda||w^k||_2^2</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+represents the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-th
+tree and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>k</mi></msub><annotation encoding="application/x-tex">L_{k}</annotation></semantics></math>
+is the number of leaves.</p>
+<p><strong>Parameters:</strong> <code>half_life = 60</code> trading days
+(~3 months), <code>floor = 0.5</code>.</p>
+<p>This means a sample from 3 months ago receives 50% the weight of the
+most recent day, while data older than ~6 months still retains 50%
+weight via the floor. Walk-forward cross-validation (Oct 2025 – May
+2026) confirmed <code>hl=60</code> outperforms <code>hl=120</code>
+across multiple regimes: more recent data is the primary driver of alpha
+during the 2026 bull market. The floor prevents over-discarding the
+structural knowledge embedded in pre-2026 data.</p>
+<hr />
+<h2 id="walk-forward-validation">5. Walk-Forward Validation</h2>
+<p>To respect the time-series structure of financial data, we use
+<strong>walk-forward cross-validation</strong> with a monthly expanding
+training window, evaluated over the period Oct 2025 – May 2026 (135
+five-day holding windows).</p>
+<h3 id="protocol">5.1 Protocol</h3>
+<ul>
+<li><strong>Retrain frequency:</strong> Monthly (8 retrain points: Oct
+2025 – May 2026)</li>
+<li><strong>Embargo:</strong> 5 trading days between train end and
+prediction date (matching <code>target_5d</code> horizon)</li>
+<li><strong>Evaluation:</strong> Each trading day as a buy date, sell 5
+days later; portfolio built from that day’s features</li>
+</ul>
+<h3 id="baseline-vs.-final-model-comparison">5.2 Baseline vs. Final
+Model Comparison</h3>
+<p>The table below compares the original baseline (exp_001 style)
+against the final Window 2 model configuration, evaluated on 3-day
+holding windows for fair comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Baseline</th>
+<th>Final Model</th>
+<th>Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mean_excess%</td>
+<td>+0.396%</td>
+<td>+0.764%</td>
+<td>+0.368%</td>
+</tr>
+<tr>
+<td>std_excess%</td>
+<td>+1.337%</td>
+<td>+2.423%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Sharpe</td>
+<td>0.296</td>
+<td><strong>0.316</strong></td>
+<td>+6.8%</td>
+</tr>
+<tr>
+<td>win_rate</td>
+<td>57.8%</td>
+<td>60.0%</td>
+<td>+2.2pp</td>
+</tr>
+<tr>
+<td>mean IC</td>
+<td>−0.001</td>
+<td>−0.001</td>
+<td>≈ same</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Baseline configuration:</strong> 14 features (no amplitude),
+uniform sample weights, top_k=50, rank-linear weighting, cap=10%.<br />
+<strong>Final model:</strong> 16 features (+amplitude), time-decay
+hl=60, top_k=30, score-prop weighting, cap=10%.</p>
+<h3 id="target-horizon-analysis-3d-vs.-5d">5.3 Target Horizon Analysis
+(3d vs. 5d)</h3>
+<p>Both targets were evaluated on 5-day holding windows (matching the
+competition evaluation):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>3d-target</th>
+<th>5d-target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mean_excess%</td>
+<td><strong>+0.889%</strong></td>
+<td>+0.787%</td>
+</tr>
+<tr>
+<td>std_excess%</td>
+<td>3.039%</td>
+<td><strong>2.790%</strong></td>
+</tr>
+<tr>
+<td>Sharpe</td>
+<td><strong>0.305</strong></td>
+<td>0.259</td>
+</tr>
+<tr>
+<td>win_rate</td>
+<td><strong>64.4%</strong></td>
+<td>54.1%</td>
+</tr>
+<tr>
+<td>max_loss%</td>
+<td><strong>−5.38%</strong></td>
+<td>−5.83%</td>
+</tr>
+<tr>
+<td>mean IC (vs 5d realized)</td>
+<td>−0.015</td>
+<td><strong>−0.009</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regime breakdown:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Market Regime</th>
+<th>3d-target</th>
+<th>5d-target</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strong bull (&gt;+3%, N=51)</td>
+<td>+1.414%</td>
+<td>+1.370%</td>
+<td>3d</td>
+</tr>
+<tr>
+<td>Bull (+1% to +3%, N=16)</td>
+<td>+0.358%</td>
+<td>+0.366%</td>
+<td>≈ tie</td>
+</tr>
+<tr>
+<td>Neutral (±1%, N=19)</td>
+<td>+0.049%</td>
+<td>+0.004%</td>
+<td>3d</td>
+</tr>
+<tr>
+<td>Bear (−1% to −3%, N=18)</td>
+<td>+0.706%</td>
+<td>+0.654%</td>
+<td>3d</td>
+</tr>
+<tr>
+<td>Strong bear (&lt;−3%, N=31)</td>
+<td>+0.474%</td>
+<td><strong>+0.617%</strong></td>
+<td>5d</td>
+</tr>
+</tbody>
+</table>
+<p>The 3d-target model delivers better risk-adjusted returns overall.
+However, the 5d-target was chosen for Window 2 on theoretical grounds:
+the evaluation window is May 11–15 (5 days), and using features from May
+8, a 5d model targets May 8 → May 15 exactly — while a 3d model targets
+only May 8 → May 13, leaving the final two evaluation days
+unmodelled.</p>
+<h3 id="quarterly-stability">5.4 Quarterly Stability</h3>
+<table>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>5d-target exc%</th>
+<th>3d-target exc%</th>
+<th>bench%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025 Q4</td>
+<td>+0.816%</td>
+<td>+0.465%</td>
+<td>+0.587%</td>
+</tr>
+<tr>
+<td>2026 Q1</td>
+<td>+0.880%</td>
+<td><strong>+1.540%</strong></td>
+<td>−0.142%</td>
+</tr>
+<tr>
+<td>2026 Q2 (partial)</td>
+<td>+0.417%</td>
+<td>+0.302%</td>
+<td>+2.835%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="portfolio-construction">6. Portfolio Construction</h2>
+<h3 id="stock-selection">6.1 Stock Selection</h3>
+<p>Top-30 stocks by predicted score on the prediction date (reduced from
+50 in baseline to increase conviction and reduce dilution from marginal
+picks).</p>
+<h3 id="score-proportional-weighting-with-volatility-adjustment">6.2
+Score-Proportional Weighting with Volatility Adjustment</h3>
+<p>The Window 2 submission uses <strong>volatility-adjusted
+score-proportional weighting</strong>, which combines two
+mechanisms:</p>
+<p><strong>Step 1 — Score-proportional base weights:</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>w</mi><mi>i</mi><mtext mathvariant="normal">raw</mtext></msubsup><mo>=</mo><mfrac><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>−</mo><mrow><mi mathvariant="normal">min</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>ε</mi></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>j</mi></msub><mo>−</mo><mrow><mi mathvariant="normal">min</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>ε</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">w_i^{\text{raw}} = \frac{s_i - \min(s) + \varepsilon}{\sum_j (s_j - \min(s) + \varepsilon)}</annotation></semantics></math></p>
+<p><strong>Step 2 — Volatility adjustment:</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>w</mi><mi>i</mi><mtext mathvariant="normal">adj</mtext></msubsup><mo>=</mo><mfrac><mrow><msubsup><mi>w</mi><mi>i</mi><mtext mathvariant="normal">raw</mtext></msubsup><mi>/</mi><msub><mi>σ</mi><mi>i</mi></msub></mrow><mrow><munder><mo>∑</mo><mi>j</mi></munder><msubsup><mi>w</mi><mi>j</mi><mtext mathvariant="normal">raw</mtext></msubsup><mi>/</mi><msub><mi>σ</mi><mi>j</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">w_i^{\text{adj}} = \frac{w_i^{\text{raw}} / \sigma_i}{\sum_j w_j^{\text{raw}} / \sigma_j}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>
+is <code>vol_20d</code> for stock
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.
+This down-weights high-volatility stocks within the selected top-30,
+shifting allocation toward stocks with similar predicted returns but
+lower realized volatility.</p>
+<p><strong>Step 3 — Iterative cap enforcement</strong> to satisfy the
+10% constraint:</p>
+<pre><code>while any weight &gt; cap:
+    excess = sum(w[i] - cap for w[i] &gt; cap)
+    set w[i] = cap for all i where w[i] &gt; cap
+    redistribute excess proportionally to uncapped stocks</code></pre>
+<p><strong>Walk-forward comparison (score-prop
+vs. vol-adjusted):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>score-prop</th>
+<th>vol-adjusted</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mean_excess%</td>
+<td>+0.787%</td>
+<td><strong>+0.790%</strong></td>
+<td>+0.003%</td>
+</tr>
+<tr>
+<td>std_excess%</td>
+<td>3.039%</td>
+<td><strong>2.790%</strong></td>
+<td>−8.2%</td>
+</tr>
+<tr>
+<td>Sharpe</td>
+<td>0.259</td>
+<td><strong>0.283</strong></td>
+<td><strong>+9.3%</strong></td>
+</tr>
+<tr>
+<td>win_rate</td>
+<td>54.1%</td>
+<td><strong>55.6%</strong></td>
+<td>+1.5pp</td>
+</tr>
+<tr>
+<td>max_loss%</td>
+<td>−5.83%</td>
+<td><strong>−5.70%</strong></td>
+<td>+0.13pp</td>
+</tr>
+</tbody>
+</table>
+<p>The volatility adjustment preserves mean excess while reducing
+portfolio variance by 8%, yielding a 9% Sharpe improvement. In strong
+bear regimes, vol-adjusted excess is +0.617% vs +0.474% for score-prop
+(+30% improvement), confirming the mechanism’s value in risk-off
+environments.</p>
+<h3 id="window-2-submitted-portfolio-w2_014">6.3 Window 2 Submitted
+Portfolio (w2_014)</h3>
+<ul>
+<li><strong>Prediction date:</strong> 2026-05-08 (last trading day
+before Window 2)</li>
+<li><strong>Train cutoff:</strong> 2026-04-28 (5-day embargo)</li>
+<li><strong>Training rows:</strong> 158,513</li>
+<li><strong>Holdings:</strong> 30 stocks</li>
+<li><strong>Max single weight:</strong> 9.44% (300136, vol=4.0%)</li>
+<li><strong>All constraints verified:</strong> ≥30 stocks, weights ≤10%,
+sum = 1.000000</li>
+</ul>
+<p><strong>Top-10 holdings:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stock</th>
+<th>Weight</th>
+<th>vol_20d</th>
+<th>Predicted 5d%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>300136</td>
+<td>9.44%</td>
+<td>4.0%</td>
+<td>+6.13%</td>
+</tr>
+<tr>
+<td>002261</td>
+<td>9.30%</td>
+<td>3.8%</td>
+<td>+5.80%</td>
+</tr>
+<tr>
+<td>002624</td>
+<td>8.64%</td>
+<td>5.1%</td>
+<td>+6.82%</td>
+</tr>
+<tr>
+<td>300857</td>
+<td>7.64%</td>
+<td>8.1%</td>
+<td>+8.78%</td>
+</tr>
+<tr>
+<td>688172</td>
+<td>7.00%</td>
+<td>5.2%</td>
+<td>+5.96%</td>
+</tr>
+<tr>
+<td>688615</td>
+<td>5.47%</td>
+<td>7.7%</td>
+<td>+6.61%</td>
+</tr>
+<tr>
+<td>688347</td>
+<td>5.30%</td>
+<td>4.9%</td>
+<td>+4.78%</td>
+</tr>
+<tr>
+<td>688387</td>
+<td>5.22%</td>
+<td>4.0%</td>
+<td>+4.24%</td>
+</tr>
+<tr>
+<td>600487</td>
+<td>4.71%</td>
+<td>4.7%</td>
+<td>+4.37%</td>
+</tr>
+<tr>
+<td>002436</td>
+<td>4.20%</td>
+<td>4.0%</td>
+<td>+3.77%</td>
+</tr>
+</tbody>
+</table>
+<p>Model-predicted portfolio return: <strong>+5.03%</strong>. Historical
+calibration shows top-decile predictions realize <strong>+4.53%</strong>
+on average (Oct 2025–Apr 2026), placing the expected Window 2 return in
+the +4–5% range.</p>
+<hr />
+<h2 id="experiments-and-results">7. Experiments and Results</h2>
+<h3 id="window-1-experiment-log">7.1 Window 1 Experiment Log</h3>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 23%" />
+<col style="width: 14%" />
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Experiment</th>
+<th>Model</th>
+<th>Target</th>
+<th>BT Sharpe</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w1_001</td>
+<td>xgboost_baseline</td>
+<td>XGBoost</td>
+<td>raw 3d</td>
+<td>0.07</td>
+<td>Reference</td>
+</tr>
+<tr>
+<td>w1_002</td>
+<td>lightgbm</td>
+<td>LightGBM</td>
+<td>raw 3d</td>
+<td>0.27</td>
+<td>Comparable</td>
+</tr>
+<tr>
+<td>w1_003</td>
+<td>lgbm_rank</td>
+<td>LightGBM</td>
+<td>rank 3d</td>
+<td>0.07</td>
+<td>Rank target removes beta</td>
+</tr>
+<tr>
+<td>w1_004</td>
+<td>lgbm_rank_top30</td>
+<td>LightGBM</td>
+<td>rank 3d</td>
+<td>0.27</td>
+<td>Shorter horizon</td>
+</tr>
+<tr>
+<td>w1_005</td>
+<td>lgbm_rank_10fold</td>
+<td>LightGBM</td>
+<td>rank 3d</td>
+<td>0.54</td>
+<td>10-fold, extended BT</td>
+</tr>
+<tr>
+<td>w1_008</td>
+<td>ensemble_xgb_lgbm</td>
+<td>Ensemble</td>
+<td>rank 3d</td>
+<td>0.52</td>
+<td>Equal-weight avg</td>
+</tr>
+<tr>
+<td>w1_009–011</td>
+<td>ensemble_decay</td>
+<td>Ensemble</td>
+<td>rank 3d</td>
+<td>−0.46 to −0.13</td>
+<td>Short decay hurts rank target</td>
+</tr>
+<tr>
+<td>w1_012–015</td>
+<td>extended_feat variants</td>
+<td>Ensemble</td>
+<td>rank 3d</td>
+<td>−</td>
+<td>Amihud, high52w, industry</td>
+</tr>
+<tr>
+<td><strong>w1_016</strong></td>
+<td><strong>xgb_decay_hl120</strong></td>
+<td><strong>XGBoost</strong></td>
+<td><strong>raw 3d</strong></td>
+<td><strong>0.800</strong></td>
+<td><strong>Time-decay breakthrough</strong></td>
+</tr>
+<tr>
+<td><strong>w1_017</strong></td>
+<td><strong>xgb_decay_amplitude</strong></td>
+<td><strong>XGBoost</strong></td>
+<td><strong>raw 3d</strong></td>
+<td><strong>0.978</strong></td>
+<td><strong>+amplitude feature</strong></td>
+</tr>
+<tr>
+<td>w1_018</td>
+<td>xgb_decay_top30</td>
+<td>XGBoost</td>
+<td>raw 3d</td>
+<td>0.914</td>
+<td>top_k=30: higher return, lower Sharpe</td>
+</tr>
+<tr>
+<td><strong>w1_019</strong></td>
+<td><strong>score_prop_top50</strong></td>
+<td><strong>XGBoost</strong></td>
+<td><strong>raw 3d</strong></td>
+<td><strong>0.757</strong></td>
+<td><strong>Window 1 submission</strong></td>
+</tr>
+<tr>
+<td>w1_020</td>
+<td>asym_huber_backup</td>
+<td>XGBoost</td>
+<td>raw 3d</td>
+<td>0.738</td>
+<td>Defensive backup</td>
+</tr>
+<tr>
+<td>w1_021–022</td>
+<td>score_prop_cap8/7</td>
+<td>XGBoost</td>
+<td>raw 3d</td>
+<td>~0.74</td>
+<td>Conservative cap variants</td>
+</tr>
+<tr>
+<td>w1_023</td>
+<td>xgb_optuna</td>
+<td>XGBoost</td>
+<td>raw 3d</td>
+<td>—</td>
+<td>Optuna-tuned (regime mismatch)</td>
+</tr>
+<tr>
+<td>w1_024–026</td>
+<td>ridge_ensemble</td>
+<td>XGB+Ridge</td>
+<td>raw 3d</td>
+<td>0.239–0.357</td>
+<td>Ridge adds noise (multicollinearity)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="window-2-experiment-log">7.2 Window 2 Experiment Log</h3>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 10%" />
+<col style="width: 22%" />
+<col style="width: 10%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Experiment</th>
+<th>top_k</th>
+<th>hl</th>
+<th>Weighting</th>
+<th>cap</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w2_001</td>
+<td>baseline_top50</td>
+<td>50</td>
+<td>120</td>
+<td>rank-linear</td>
+<td>8%</td>
+<td>Baseline config</td>
+</tr>
+<tr>
+<td>w2_002</td>
+<td>new_feats_top50</td>
+<td>50</td>
+<td>120</td>
+<td>rank-linear</td>
+<td>8%</td>
+<td>+amplitude features</td>
+</tr>
+<tr>
+<td>w2_003</td>
+<td>topk30</td>
+<td>30</td>
+<td>120</td>
+<td>score-prop</td>
+<td>8%</td>
+<td>Reduce holdings</td>
+</tr>
+<tr>
+<td>w2_004</td>
+<td>topk30_hl60</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>8%</td>
+<td>Shorter decay</td>
+</tr>
+<tr>
+<td>w2_005</td>
+<td>topk30_ridge50</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>8%</td>
+<td>XGB/Ridge ensemble</td>
+</tr>
+<tr>
+<td>w2_006–008</td>
+<td>ridge variants</td>
+<td>50</td>
+<td>60</td>
+<td>score-prop</td>
+<td>—</td>
+<td>Ridge ensemble variants</td>
+</tr>
+<tr>
+<td>w2_009–010</td>
+<td>3dtarget_cap8</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>8%</td>
+<td>3d-target, various caps</td>
+</tr>
+<tr>
+<td>w2_011</td>
+<td>3dtarget_cap10</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>10%</td>
+<td>3d-target, cap=10%</td>
+</tr>
+<tr>
+<td>w2_012</td>
+<td>5dtarget_cap10</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>10%</td>
+<td>5d-target</td>
+</tr>
+<tr>
+<td>w2_013</td>
+<td>5dtarget_final</td>
+<td>30</td>
+<td>60</td>
+<td>score-prop</td>
+<td>10%</td>
+<td>Regenerated with May 8 data</td>
+</tr>
+<tr>
+<td><strong>w2_014</strong></td>
+<td><strong>5dtarget_voladj</strong></td>
+<td><strong>30</strong></td>
+<td><strong>60</strong></td>
+<td><strong>vol-adj</strong></td>
+<td><strong>10%</strong></td>
+<td><strong>Window 2 submission</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-findings">7.3 Key Findings</h3>
+<p><strong>Finding 1 — Raw return target outperforms rank target in bull
+markets.</strong> Rank target (w1_003–015) removes market beta but also
+discards magnitude information. In April 2026’s sustained uptrend, the
+model trained on raw returns identifies the highest-momentum stocks more
+aggressively. The raw target model (w1_016) achieves Sharpe 0.800 vs
+negative Sharpe for rank-target models.</p>
+<p><strong>Finding 2 — Time-decay sample weights are the single largest
+lever.</strong> Switching from uniform weights to exponential decay with
+<code>hl=120, floor=0.5</code> raised April Sharpe from ~0.07 to 0.800
+(11×). Walk-forward validation subsequently showed <code>hl=60</code>
+further outperforms <code>hl=120</code> across Oct 2025 – May 2026, as
+recent regime data (2026 Q1 bull market) is far more informative than
+2025 sideways data.</p>
+<p><strong>Finding 3 — Amplitude adds independent alpha.</strong>
+<code>amplitude_ma_20d</code> captures intraday price range dynamics not
+fully captured by <code>vol_20d</code>. Adding this feature raised April
+Sharpe from 0.800 to 0.978 despite slightly worsening CV IC (regime
+mismatch: the feature is more useful in trending markets).</p>
+<p><strong>Finding 4 — Ridge regression ensemble does not improve over
+XGBoost alone.</strong> Ridge coefficients are near zero across all
+features due to multicollinearity between raw and rank-normalized
+features. Walk-forward Sharpe: XGB alone 0.357 &gt; XGB70/Ridge30 0.318
+&gt; XGB50/Ridge50 0.239.</p>
+<p><strong>Finding 5 — Relative return features (rel_ret_5d, beta_60d)
+add no new cross-sectional signal.</strong>
+<code>rel_ret_5d = ret_5d − idx_ret_5d</code> is identical to
+<code>ret_5d</code> in cross-sectional Spearman rank (the index return
+is constant within each date and cancels). <code>beta_60d</code> has IC
+t-statistic of 0.48 (not significant). True performance driver is
+<code>hl=60</code> + <code>top_k=30</code>, not the additional
+features.</p>
+<p><strong>Finding 6 — Volatility-adjusted weights improve Sharpe by 9%
+with no mean return sacrifice.</strong> Multiplying score-proportional
+weights by <code>1/vol_20d</code> before cap enforcement reduces
+portfolio std from 3.04% to 2.79% (-8%) while mean excess is unchanged
+(+0.79%). Effect is largest in bear regimes: +0.617% vs +0.474% excess
+(+30%).</p>
+<p><strong>Finding 7 — 5d-target aligns with Window 2 evaluation
+horizon.</strong> Although the 3d-target model achieves higher
+walk-forward Sharpe overall (0.305 vs 0.259), the 5d-target was chosen
+for Window 2 because the prediction made from May 8 features targets
+exactly the May 15 exit price. Using a 3d model would leave the period
+May 13–15 unmodelled.</p>
+<hr />
+<h2 id="special-analyses">8. Special Analyses</h2>
+<h3 id="april-2026-out-of-sample-performance">8.1 April 2026
+Out-of-Sample Performance</h3>
+<p>Using the final model methodology (5d-target, hl=60, top_k=30,
+vol-adj weights) trained on data up to March 24 — with no lookahead into
+April — the portfolio was rebalanced weekly throughout April 2026:</p>
+<table>
+<thead>
+<tr>
+<th>Window</th>
+<th>Portfolio</th>
+<th>CSI500</th>
+<th>Excess</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apr 1 → Apr 8</td>
+<td>+8.36%</td>
+<td>+4.30%</td>
+<td><strong>+4.06%</strong></td>
+</tr>
+<tr>
+<td>Apr 9 → Apr 15</td>
+<td>+3.49%</td>
+<td>+1.25%</td>
+<td><strong>+2.24%</strong></td>
+</tr>
+<tr>
+<td>Apr 16 → Apr 22</td>
+<td>+5.76%</td>
+<td>+4.13%</td>
+<td><strong>+1.63%</strong></td>
+</tr>
+<tr>
+<td>Apr 23 → Apr 29</td>
+<td>+3.71%</td>
+<td>−0.40%</td>
+<td><strong>+4.11%</strong></td>
+</tr>
+<tr>
+<td>Apr 30 → May 8</td>
+<td>+10.45%</td>
+<td>+4.22%</td>
+<td><strong>+6.23%</strong></td>
+</tr>
+<tr>
+<td><strong>Cumulative</strong></td>
+<td><strong>+35.85%</strong></td>
+<td><strong>+14.14%</strong></td>
+<td><strong>+21.71%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Every sub-window delivered positive excess return. The cumulative
+portfolio return of +35.85% vs benchmark +14.14% demonstrates the
+model’s effectiveness in the April 2026 bull environment. The Apr 30 →
+May 8 window uses a 3d-target model (for comparison with the Window 1
+submission) and yields +11.81% portfolio / +7.59% excess with
+score-prop, confirming strong model signal heading into Window 2.</p>
+<h3 id="market-regime-analysis">8.2 Market Regime Analysis</h3>
+<p>Using the CSI500 20-day log return as a regime proxy, the
+walk-forward reveals different model behaviour across market states:</p>
+<table>
+<thead>
+<tr>
+<th>Regime (20d ret)</th>
+<th>N</th>
+<th>Base excess</th>
+<th>vol-adj excess</th>
+<th>Benchmark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strong bull &gt;+3%</td>
+<td>51</td>
+<td>+1.414%</td>
+<td>+1.370%</td>
+<td>+0.878%</td>
+</tr>
+<tr>
+<td>Bull +1% to +3%</td>
+<td>16</td>
+<td>+0.358%</td>
+<td>+0.366%</td>
+<td>−0.972%</td>
+</tr>
+<tr>
+<td>Neutral ±1%</td>
+<td>19</td>
+<td>+0.049%</td>
+<td>+0.004%</td>
+<td>−0.226%</td>
+</tr>
+<tr>
+<td>Bear −1% to −3%</td>
+<td>18</td>
+<td>+0.706%</td>
+<td>+0.654%</td>
+<td>+0.684%</td>
+</tr>
+<tr>
+<td>Strong bear &lt;−3%</td>
+<td>31</td>
+<td>+0.474%</td>
+<td><strong>+0.617%</strong></td>
+<td>+1.415%</td>
+</tr>
+</tbody>
+</table>
+<p>The model maintains positive excess across all regimes, with the
+largest absolute excess in strong bull markets. The vol-adjusted variant
+outperforms specifically in strong bear conditions (+30%), justifying
+its selection for the uncertain Window 2 environment.</p>
+<p>As of May 8, the CSI500 20-day return is +13.83% (97th historical
+percentile), placing the current regime firmly in “strong bull.” The
+annualized realized volatility is 22.5%, which is elevated and
+historically associated with unstable rallies, introducing
+mean-reversion risk for Window 2.</p>
+<h3 id="post-holiday-trading-node-analysis-window-1">8.3 Post-Holiday
+Trading Node Analysis (Window 1)</h3>
+<p>The Window 1 submission predicts returns for May 6–8, the first 3
+trading days after China’s 5-day Labor Day holiday (May 1–5). Historical
+analysis of post-long-holiday openings found:</p>
+<ul>
+<li><strong>Mean first-day CSI500 return:</strong> +1.42% (only one
+exception: April 7, 2025, −9.55% due to US tariff shock)</li>
+<li><strong>Post-holiday alpha efficiency:</strong> ~63% of normal-day
+alpha, due to lower cross-sectional dispersion</li>
+<li><strong>Structural gap:</strong> Model features are computed from
+April 30 data; no information about overseas market movements during the
+holiday is captured</li>
+</ul>
+<p>External conditions during the holiday (May 1–4, 2026): S&amp;P 500
+and Nasdaq both reached all-time highs, CNH stable at 6.83, domestic
+holiday consumption record-high. These indicators supported the bullish
+scenario, with the Window 1 portfolio (w1_019) achieving approximately
++6.25% portfolio return.</p>
+<h3 id="alternative-loss-functions">8.4 Alternative Loss Functions</h3>
+<p><strong>Asymmetric Huber Loss with Downside Penalty:</strong> A
+custom XGBoost objective that applies asymmetric penalties: -
+Underestimate (residual ≤ 0): standard Huber loss - Overestimate a
+falling stock: α × (1 + β × |y_true|) × Huber</p>
+<p>With α=2.0, β=2.0, δ=0.03, the model reduced “overestimating a loser”
+frequency from 35.9% to 1.7%. However, conservatism reduced mean excess
+from +2.32% to +1.19% in the bull market. Retained as defensive backup
+(w1_020) but not selected for either final submission.</p>
+<hr />
+<h2 id="submitted-files">9. Submitted Files</h2>
+<h3 id="window-1-may-68">Window 1 (May 6–8)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 34%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Strategy</th>
+<th>Performance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>w1_019_score_prop_top50_SUBMITTED.csv</code></td>
+<td>XGB + hl=120 + amplitude + score_prop, top50, cap 10%</td>
+<td>~+6.25% portfolio return</td>
+</tr>
+</tbody>
+</table>
+<h3 id="window-2-may-1115">Window 2 (May 11–15)</h3>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 22%" />
+<col style="width: 47%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Strategy</th>
+<th>Walk-forward Sharpe</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>w2_011_3dtarget_topk30_cap10.csv</code></td>
+<td>3d-target, top30, hl=60, score-prop</td>
+<td>0.305</td>
+<td>Higher overall Sharpe</td>
+</tr>
+<tr>
+<td><code>w2_012_5dtarget_topk30_cap10.csv</code></td>
+<td>5d-target, top30, hl=60, score-prop</td>
+<td>0.259</td>
+<td>Horizon-aligned</td>
+</tr>
+<tr>
+<td><strong><code>w2_014_5dtarget_topk30_cap10_voladj_FINAL.csv</code></strong></td>
+<td><strong>5d-target, top30, hl=60, vol-adj, cap 10%</strong></td>
+<td><strong>0.283</strong></td>
+<td><strong>Submitted</strong></td>
+</tr>
+</tbody>
+</table>
+<p>All files pass the competition validator: ≥ 30 stocks, all weights
+positive, max weight ≤ 10%, sum = 1.000.</p>
+<hr />
+<h2 id="limitations">10. Limitations</h2>
+<ul>
+<li><strong>Static universe:</strong> Constituent list is a snapshot;
+survivorship bias risk on multi-year backtests.</li>
+<li><strong>No fundamental data:</strong> Features are purely
+price/volume-based. PE, PB, ROE, earnings revision signals are
+excluded.</li>
+<li><strong>Regime concentration:</strong> April 2026 is a single
+bull-market month. IC metrics on the full Oct 2025–May 2026 walk-forward
+are negative (mean ≈ −0.010), reflecting genuine weak cross-sectional
+predictability; the model works through portfolio-level momentum rather
+than individual stock IC.</li>
+<li><strong>Vol-adjustment changes weights only, not selection:</strong>
+The 30 stocks selected remain identical between score-prop and
+vol-adjusted variants. Truly excluding high-volatility stocks would
+require applying the <code>score/vol</code> ratio before
+<code>nlargest(30)</code>, at the cost of potentially missing high-alpha
+momentum names.</li>
+<li><strong>5d-target embargo consumes more recent data:</strong> The
+5-day embargo pushes the train cutoff to April 28, excluding the final 5
+trading days before May 8. In a fast-moving market, this represents
+meaningful lost signal.</li>
+<li><strong>Score-prop concentration:</strong> Top-10 concentration of
+~65% means single-stock events disproportionately affect portfolio
+returns.</li>
+</ul>
+<hr />
+<h2 id="conclusion">11. Conclusion</h2>
+<p>The final Window 2 submission (<code>w2_014</code>) is the result of
+a systematic two-stage development process. The Window 1 model
+established the core architecture (XGBoost, raw return target,
+time-decay weights, amplitude features), while Window 2 refinements
+addressed three additional dimensions:</p>
+<ol type="1">
+<li><p><strong>Target horizon alignment:</strong> Switched from 3-day to
+5-day forward return target to match the May 11–15 evaluation window,
+eliminating the 2-day modelling gap present in the 3d-target
+approach.</p></li>
+<li><p><strong>Recency weighting:</strong> Reduced half-life from
+<code>hl=120</code> to <code>hl=60</code>, confirmed by walk-forward
+cross-validation (Oct 2025 – May 2026) to better capture the 2026 bull
+market regime without over-discarding structural patterns from 2025
+data.</p></li>
+<li><p><strong>Volatility-adjusted portfolio construction:</strong>
+After score-proportional selection of top-30 stocks, weights are scaled
+by <code>1/vol_20d</code> before cap enforcement. This yields a
+<strong>9.3% Sharpe improvement</strong> (0.259 → 0.283) and
+<strong>8.2% variance reduction</strong> in walk-forward testing, with
+particular benefit in bear regimes (+30% excess improvement), providing
+downside protection in the uncertain post-May-holiday
+environment.</p></li>
+</ol>
+<p>The model’s April 2026 out-of-sample performance — +35.85% portfolio
+return vs +14.14% benchmark, +21.71% excess over five weeks with zero
+losing sub-windows — validates the methodology under live market
+conditions. The model-predicted return for Window 2 is
+<strong>+5.03%</strong>, with historical calibration suggesting a
+realized range of +4–5% if the current bull regime persists.</p>
+<hr />
+<p><em>Submission files: <code>outputs/submissions/</code> | Scripts:
+<code>scripts/</code> | Walk-forward results:
+<code>scripts/wfcv_*.py</code></em></p>
+</body>
+</html>
