@@ -102,11 +102,11 @@ Optuna tuning of these hyperparameters yielded no significant Sharpe gain (withi
 
 A key improvement over uniform training is **exponential time-decay weighting**, assigning higher importance to recent observations:
 
-$$W(t) = \max\!\left(2^{-(T-t)/h},\ f\right)$$
+$$W(t) = \max\\left(2^{-(T-t)/h},\ f\right)$$
 
 where $T$ is the most recent training date, $h$ is the half-life in trading days, and $f$ is a floor preventing old data from being discarded entirely. The optimised objective becomes:
 
-$$F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^n W(t_i)\!\left[g_i f_k(x_i) + \tfrac{1}{2} h_i f_k^2(x_i)\right] + \gamma|L_k| + \tfrac{1}{2}\lambda\|w^k\|_2^2$$
+$$F_k(\theta_k) \approx \text{const.} + \sum_{i = 1}^n W(t_i)\\left[g_i f_k(x_i) + \tfrac{1}{2} h_i f_k^2(x_i)\right] + \gamma|L_k| + \tfrac{1}{2}\lambda\||w^k\||_2^2$$
 
 where $k$ indexes trees and $L_k$ is the number of leaves.
 
